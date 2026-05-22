@@ -38,4 +38,4 @@ The project focuses on applying core programming concepts such as functions, cla
 4. Run the Python file:
 
 ```bash
-python main.py
+python Bank_System.py
