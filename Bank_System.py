@@ -1,15 +1,7 @@
-import hashlib
-
 
 # ──────────────────────────────────────────────
 #  Helper Functions
 # ──────────────────────────────────────────────
-
-
-def hash_password(password):
-    """Hash a password using SHA-256 (built-in)."""
-    return hashlib.sha256(password.encode()).hexdigest()
-
 
 def get_name():
     """Prompt user for a valid name (letters and spaces only)."""
@@ -82,15 +74,14 @@ def print_divider(title=""):
 
 
 class BankAccount:
-    def __init__(self, owner, username, password_hash, balance):
+    def __init__(self, owner, username, password, balance):
         self.owner = owner
         self.username = username
-        self._password_hash = password_hash   # stored as hash, never plain text
+        self._password = password
         self.balance = balance
 
     def check_password(self, password):
-        """Return True if the given password matches the stored hash."""
-        return self._password_hash == hash_password(password)
+        return self._password == password
 
     def show_balance(self):
         """Display account owner and current balance."""
@@ -133,7 +124,14 @@ class BankAccount:
 
         self.balance -= amount
         target_account.balance += amount
-        print(f"Transfer successful. New balance: {self.balance:,.2f}")
+        
+        print(
+            f"Transferred {amount:,.2f} to {target_account.owner}."
+        )
+        print(
+            f"New balance: {self.balance:,.2f}"
+            )
+        
         return True
 
 
@@ -169,6 +167,10 @@ class AccountManager:
 
         if self._username_exists(username):
             print("This username is already taken.")
+            return False
+
+        if not all(c.isalnum() or c == "_" for c in username):
+            print("Username can contain letters, numbers and _ only.")
             return False
 
         return True
@@ -242,8 +244,7 @@ class AccountManager:
 
         account_id = generate_id(self.users)
         self.users[account_id] = BankAccount(
-            owner, username, hash_password(password), balance
-        )
+        owner, username, password, balance)
 
         print(f"\nAccount created successfully! Your ID is: {account_id}")
 
@@ -350,7 +351,7 @@ def main():
 
     while True:
         print("=" * 100)
-        print("=" * 31,"Hello this is Mohannad's Bank System", "=" * 31)
+        print(" Hello this is Mohannad's Bank System ".center(100, "="))
         print("=" * 100)
         print("1.  Create Account")
         print("2.  Login")
